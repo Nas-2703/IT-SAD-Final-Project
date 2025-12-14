@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Barangay Complaint Tracking System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Poppins font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <div class="brand">
+      <span class="brand-logo">🏡</span>
+      <span class="brand-text">Barangay Complaint Tracking</span>
+    </div>
+    <nav class="top-nav-links">
+
+      <button class="nav-link" data-screen="resident-dashboard">Dashboard</button>
+      <button class="nav-link" data-screen="admin-dashboard">Admin</button>
+      <button class="nav-link" data-screen="profile-screen">Profile</button>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    <!-- 1. Login / Register -->
+    <section id="login-screen" class="screen active-screen">
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-auth="login">Sign In</button>
+          <button class="auth-tab" data-auth="register">Register</button>
+        </div>
+
+        <!-- Login form -->
+        <form id="login-form" class="auth-form">
+          <h2>Login</h2>
+          <label>
+            Email
+            <input type placeholder="Email" required />
+          </label>
+          <label>
+            Password
+            <input type placeholder="Password" required />
+          </label>
+          <button type="submit" class="btn-primary">Login</button>
+        </form>
+
+        <!-- Register form -->
+        <form id="register-form" class="auth-form hidden">
+          <h2>Register</h2>
+          <label>
+            Full Name
+            <input type="text" required />
+          </label>
+          <label>
+            Email
+            <input type="email" required />
+          </label>
+          <label>
+            Contact Number
+            <input type="tel" />
+          </label>
+          <label>
+            Address (Barangay / Purok)
+            <input type="text" />
+          </label>
+          <label>
+            Password
+            <input type="password" required />
+          </label>
+          <label>
+            Confirm Password
+            <input type="password" required />
+          </label>
+          <button type="submit" class="btn-primary">Create Account</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. Resident Dashboard -->
+    <section id="resident-dashboard" class="screen">
+      <h1 class="screen-title">Resident Dashboard</h1>
+
+      <div class="cards-row">
+        <div class="stat-card">
+          <span class="stat-label">Total Complaints</span>
+          <span class="stat-value" id="stat-total">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Pending</span>
+          <span class="status-chip status-pending" id="stat-pending">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Resolved</span>
+          <span class="status-chip status-resolved" id="stat-resolved">0</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Recent Complaints</h2>
+          <button class="btn-secondary" data-screen="complaint-list">View All</button>
+        </div>
+        <div id="recent-complaints" class="complaint-list"></div>
+      </div>
+
+      <button class="btn-fab" data-screen="submit-complaint">
+        + Submit Complaint
+      </button>
+    </section>
+
+    <!-- 3. Submit Complaint Form -->
+    <section id="submit-complaint" class="screen">
+      <h1 class="screen-title">Submit Complaint</h1>
+      <div class="card">
+        <form id="complaint-form" class="form-grid">
+          <label>
+            Category
+            <select id="cf-category" required>
+              <option value="">Select category</option>
+              <option>Noise</option>
+              <option>Garbage</option>
+              <option>Streetlight</option>
+              <option>Security</option>
+              <option>Others</option>
+            </select>
+          </label>
+          <label>
+            Title
+            <input id="cf-title" type="text" required />
+          </label>
+          <label class="full-width">
+            Description
+            <textarea id="cf-desc" rows="4" required></textarea>
+          </label>
+          <label>
+            Location
+            <input id="cf-location" type="text" placeholder="Purok / Street" />
+          </label>
+          <fieldset class="priority-group">
+            <legend>Priority</legend>
+            <label><input type="radio" name="priority" value="Normal" checked /> Normal</label>
+            <label><input type="radio" name="priority" value="Urgent" /> Urgent</label>
+          </fieldset>
+          <label class="full-width">
+            Attachments
+            <input type="file" multiple />
+          </label>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" data-screen="resident-dashboard">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 4. Complaint List -->
+    <section id="complaint-list" class="screen">
+      <h1 class="screen-title">My Complaints</h1>
+
+      <div class="filters-row">
+        <input type="search" placeholder="Search by title or ID" />
+        <select id="status-filter">
+          <option value="all">All Status</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+      </div>
+
+      <div id="complaints-container" class="complaint-list"></div>
+    </section>
+
+    <!-- 5. Complaint Details View -->
+    <section id="complaint-details" class="screen">
+      <button class="btn-secondary back-btn" data-screen="complaint-list">
+        ← Back
+      </button>
+      <h1 class="screen-title" id="detail-title">Complaint Details</h1>
+
+      <div class="detail-layout">
+        <div class="card">
+          <h2 id="detail-complaint-title">Broken Streetlight</h2>
+          <span class="status-chip status-pending" id="detail-status">Pending</span>
+          <div class="detail-meta">
+            <div><strong>ID:</strong> <span id="detail-id">C-001</span></div>
+            <div><strong>Category:</strong> <span id="detail-category">Streetlight</span></div>
+            <div><strong>Location:</strong> <span id="detail-location">Purok 2</span></div>
+            <div><strong>Date:</strong> <span id="detail-date">2025-12-01</span></div>
+          </div>
+          <h3>Description</h3>
+          <p id="detail-description">
+            The streetlight near the barangay hall is not working for 3 days.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>Timeline / Updates</h2>
+          <ul id="detail-timeline" class="timeline">
+            <li><span>2025-12-01</span> Complaint submitted</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Admin Dashboard -->
+    <section id="admin-dashboard" class="screen">
+      <h1 class="screen-title">Admin Dashboard</h1>
+
+      <div class="cards-row">
+        <div class="stat-card">
+          <span class="stat-label">Total Complaints (All Residents)</span>
+          <span class="stat-value">18</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Urgent</span>
+          <span class="status-chip status-pending">4 Urgent</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Resolved</span>
+          <span class="status-chip status-resolved">9 Resolved</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Work Queue</h2>
+          <button class="btn-secondary" data-screen="reports-screen">View Reports</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Resident</th>
+              <th>Category</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Last Updated</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. Reports Page -->
+    <section id="reports-screen" class="screen">
+      <h1 class="screen-title">Reports</h1>
+
+      <div class="cards-row">
+        <div class="stat-card">
+          <span class="stat-label">Complaints This Month</span>
+          <span class="stat-value">12</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Avg. Resolution Time</span>
+          <span class="stat-value">3.2 days</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Complaints by Category</h2>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Count</th>
+              <th>% of Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Noise</td><td>5</td><td>28%</td></tr>
+            <tr><td>Garbage</td><td>4</td><td>22%</td></tr>
+            <tr><td>Streetlight</td><td>3</td><td>17%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 8. User Profile and Settings -->
+    <section id="profile-screen" class="screen">
+      <h1 class="screen-title">Profile & Settings</h1>
+
+      <div class="profile-layout">
+        <div class="card">
+          <div class="profile-avatar">JJ</div>
+          <h2>Johnas Jel</h2>
+          <p>Role: Resident</p>
+          <p>Email: example@email.com</p>
+          <p>Barangay: Sample Barangay</p>
+        </div>
+
+        <div class="card">
+          <h2>Account Settings</h2>
+          <form id="profile-form" class="form-grid">
+            <label>
+              Full Name
+              <input type="text" value="Johnas Jel" />
+            </label>
+            <label>
+              Email
+              <input type="email" value="example@email.com" />
+            </label>
+            <label>
+              Change Password
+              <input type="password" placeholder="New password" />
+            </label>
+            <label>
+              Confirm Password
+              <input type="password" placeholder="Confirm password" />
+            </label>
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" id="logout-btn">
+                Logout
+              </button>
+              <button type="submit" class="btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- JS -->
+  <script src="./script.js"></script>
+</body>
+</html>
